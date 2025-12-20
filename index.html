@@ -2,8 +2,8 @@
 <html lang="zh-HK">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HKAIFA | SYSTEM PRESENTATION</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HKAIFA | SYSTEM PRESENTATION (CN-COMPLIANT)</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -29,6 +29,10 @@
                     },
                     backgroundImage: {
                         'grid-pattern': "linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px)",
+                    },
+                    screens: {
+                        'xs': '375px',
+                        '3xl': '1920px',
                     }
                 }
             }
@@ -40,11 +44,18 @@
             background-color: #EAEAEA;
             color: #050505;
             overflow: hidden; /* 禁止滾動，全屏演示 */
-            cursor: none; /* 隱藏鼠標，適合展示 */
             font-family: 'Space Mono', monospace;
+            /* 僅在桌面端隱藏鼠標 */
+            cursor: auto; 
+        }
+        
+        @media (min-width: 1024px) {
+            body {
+                cursor: none;
+            }
         }
 
-        /* 大標題樣式 */
+        /* 大標題樣式 - 響應式優化 */
         .mega-text {
             font-family: 'Oswald', sans-serif;
             font-weight: 700;
@@ -62,7 +73,14 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 4rem;
+            /* 響應式內邊距 */
+            padding: 1.5rem; 
+        }
+
+        @media (min-width: 1024px) {
+            .slide-container {
+                padding: 4rem;
+            }
         }
 
         .slide-active {
@@ -76,16 +94,31 @@
             position: absolute;
             bottom: 0; left: 0; width: 100%;
             background: #050505; color: #EAEAEA;
-            padding: 1rem 0;
+            padding: 0.5rem 0;
             overflow: hidden;
             white-space: nowrap;
             z-index: 50;
             border-top: 2px solid #FF3300;
         }
+        @media (min-width: 1024px) {
+            .marquee-container {
+                padding: 1rem 0;
+            }
+        }
+
         .marquee-content {
             display: inline-block;
-            animation: marquee 25s linear infinite;
+            animation: marquee 20s linear infinite;
+            /* 手機端字體調小 */
+            font-size: 1rem; 
         }
+        @media (min-width: 1024px) {
+            .marquee-content {
+                font-size: 1.5rem; 
+                animation: marquee 25s linear infinite;
+            }
+        }
+
         @keyframes marquee {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
@@ -95,69 +128,106 @@
         #progress-bar {
             position: fixed;
             top: 0; left: 0;
-            height: 6px;
+            height: 4px; /* 手機端稍微細一點 */
             background: #FF3300;
             width: 0%;
             z-index: 100;
         }
+        @media (min-width: 1024px) {
+            #progress-bar {
+                height: 6px;
+            }
+        }
 
         /* 網格背景 */
         .bg-grid {
-            background-size: 40px 40px;
+            background-size: 20px 20px;
             position: absolute;
             inset: 0;
             z-index: -1;
             pointer-events: none;
+        }
+        @media (min-width: 1024px) {
+            .bg-grid {
+                background-size: 40px 40px;
+            }
         }
         
         /* 裝飾線 */
         .decor-line {
             height: 2px;
             background: #050505;
-            width: 100px;
-            margin: 2rem 0;
+            width: 60px;
+            margin: 1.5rem 0;
+        }
+        @media (min-width: 1024px) {
+            .decor-line {
+                width: 100px;
+                margin: 2rem 0;
+            }
+        }
+
+        /* 文本描邊兼容性 */
+        .text-stroke {
+            -webkit-text-stroke: 1px #000;
+        }
+        @media (min-width: 1024px) {
+            .text-stroke {
+                -webkit-text-stroke: 3px #000;
+            }
+        }
+        .text-stroke-white {
+            -webkit-text-stroke: 1px black;
+        }
+        @media (min-width: 1024px) {
+            .text-stroke-white {
+                -webkit-text-stroke: 2px black;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div id="loader" class="fixed inset-0 bg-signal z-[999] flex flex-col justify-center items-center">
-        <div class="font-heavy text-9xl font-bold text-black tracking-tighter">HKAIFA</div>
-        <div class="font-mono text-black mt-4 text-xl">SYSTEM_INIT // LOADING ASSETS...</div>
+    <div id="loader" class="fixed inset-0 bg-signal z-[999] flex flex-col justify-center items-center p-4 text-center">
+        <div class="font-heavy text-6xl lg:text-9xl font-bold text-black tracking-tighter">HKAIFA</div>
+        <div class="font-mono text-black mt-4 text-base lg:text-xl">SYSTEM_INIT // LOADING ASSETS...</div>
     </div>
 
     <div class="bg-grid bg-grid-pattern opacity-50"></div>
     
     <div id="progress-bar"></div>
 
-    <div class="fixed top-8 left-8 right-8 flex justify-between items-start z-40 mix-blend-difference text-white">
-        <div class="font-heavy text-3xl tracking-tighter">HKAIFA <span class="text-signal text-sm font-mono align-middle ml-2">LIVE</span></div>
-        <div class="text-right font-mono text-xs">
+    <!-- 頂部導航欄 -->
+    <div class="fixed top-4 left-4 right-4 lg:top-8 lg:left-8 lg:right-8 flex justify-between items-start z-40 mix-blend-difference text-white pointer-events-none">
+        <div class="font-heavy text-xl lg:text-3xl tracking-tighter">HKAIFA <span class="text-signal text-xs lg:text-sm font-mono align-middle ml-1 lg:ml-2">LIVE</span></div>
+        <div class="text-right font-mono text-[10px] lg:text-xs leading-tight">
             <div>HONG KONG AI FILM ACADEMY</div>
             <div id="clock">00:00:00</div>
         </div>
     </div>
 
-    <main id="stage" class="relative w-full h-screen overflow-hidden">
+    <main id="stage" class="relative w-full h-[100dvh] overflow-hidden">
 
+        <!-- SLIDE 1: INTRO -->
         <div class="slide-container" data-duration="6">
-            <div class="max-w-[1920px] mx-auto w-full grid grid-cols-12 gap-8 items-center">
-                <div class="col-span-8">
-                    <div class="font-mono text-signal mb-4 font-bold bg-black text-white inline-block px-2">/// PARENT: HKAIFF ECOSYSTEM</div>
-                    <h1 class="mega-text text-[8rem] lg:text-[11rem] leading-none mb-6">
+            <div class="max-w-[1920px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 items-center h-full lg:h-auto content-center">
+                <div class="col-span-1 lg:col-span-8 order-2 lg:order-1">
+                    <div class="font-mono text-signal mb-2 lg:mb-4 font-bold bg-black text-white inline-block px-2 text-xs lg:text-base">/// PARENT: HKAIFF ECOSYSTEM</div>
+                    <h1 class="mega-text text-[3.5rem] sm:text-7xl lg:text-[11rem] leading-none mb-4 lg:mb-6">
                         AI NATIVE<br>
-                        <span class="text-stroke text-transparent" style="-webkit-text-stroke: 3px #000;">FILMMAKING</span>
+                        <span class="text-stroke text-transparent">FILMMAKING</span>
                     </h1>
                     <div class="decor-line"></div>
-                    <h2 class="font-heavy text-4xl uppercase mb-2">香港 AI 國際電影學院</h2>
-                    <p class="font-mono text-lg max-w-2xl text-gray-700">
-                        全球首個專注於「AI原生影視創作」的專業教育機構。<br>
-                        我們不只是教授軟件，更是培養駕馭未來的「指揮家」。
+                    <h2 class="font-heavy text-2xl lg:text-4xl uppercase mb-2">香港 AI 國際電影學院</h2>
+                    <p class="font-mono text-sm lg:text-lg max-w-2xl text-gray-700 leading-relaxed">
+                        全球首個專注於「AI原生影視創作」的專業教育機構。<br class="hidden lg:block">
+                        我們不只是教授軟件，更是培養駕馭產業未來的「指揮家」。
                     </p>
                 </div>
-                <div class="col-span-4 h-full relative border-2 border-black p-4 bg-white/50 backdrop-blur-sm flex flex-col justify-end">
-                    <div class="font-heavy text-8xl text-right mb-4 opacity-10">01</div>
-                    <div class="font-mono text-xs border-t border-black pt-4">
+                <!-- 狀態框在手機端縮小並置底 -->
+                <div class="col-span-1 lg:col-span-4 h-auto lg:h-full relative border-2 border-black p-4 bg-white/50 backdrop-blur-sm flex flex-row lg:flex-col justify-between lg:justify-end items-center lg:items-stretch order-1 lg:order-2 mb-4 lg:mb-0">
+                    <div class="font-heavy text-4xl lg:text-8xl lg:text-right opacity-100 lg:opacity-10 lg:mb-4">01</div>
+                    <div class="font-mono text-[10px] lg:text-xs lg:border-t border-black lg:pt-4 text-right lg:text-left">
                         STATUS: OPERATIONAL<br>
                         LOC: HONG KONG SAR
                     </div>
@@ -165,35 +235,36 @@
             </div>
         </div>
 
+        <!-- SLIDE 2: PHILOSOPHY -->
         <div class="slide-container bg-black text-[#EAEAEA]" data-duration="7">
             <div class="absolute inset-0 z-0">
                 <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2000')] bg-cover bg-center opacity-20 grayscale"></div>
             </div>
-            <div class="relative z-10 max-w-[1920px] mx-auto w-full px-8">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+            <div class="relative z-10 max-w-[1920px] mx-auto w-full h-full flex flex-col justify-center">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
                     <div>
-                        <div class="font-mono text-signal text-sm mb-4 border border-signal inline-block px-3 py-1">CORE PHILOSOPHY</div>
-                        <h2 class="mega-text text-[5rem] lg:text-[7rem] mb-8 leading-tight">
+                        <div class="font-mono text-signal text-xs lg:text-sm mb-4 border border-signal inline-block px-3 py-1">CORE PHILOSOPHY</div>
+                        <h2 class="mega-text text-5xl lg:text-[7rem] mb-6 lg:mb-8 leading-tight">
                             TECH EMPOWERS <span class="text-signal">ART</span><br>
                             ART LEADS <span class="text-signal">TECH</span>
                         </h2>
-                        <p class="font-mono text-xl text-gray-400 max-w-xl">
-                            技術賦能藝術，藝術引領技術。我們強調人機協作、倫理責任與跨學科融合的「以人為本」AI方法。
+                        <p class="font-mono text-sm lg:text-xl text-gray-400 max-w-xl leading-relaxed">
+                            技術賦能藝術，藝術引領技術。我們強調人機協作、倫理責任與跨學科融合的「以人為本」AI方法論。
                         </p>
                     </div>
-                    <div class="border-l-2 border-[#333] pl-12 flex flex-col justify-center">
-                        <div class="mb-12">
-                            <h3 class="font-heavy text-4xl text-white mb-2">THE CONDUCTOR THEORY</h3>
-                            <div class="text-signal font-mono mb-4">指揮家論</div>
-                            <p class="font-mono text-sm text-gray-500">
+                    <div class="border-l-2 border-[#333] pl-6 lg:pl-12 flex flex-col justify-center space-y-8 lg:space-y-12">
+                        <div>
+                            <h3 class="font-heavy text-2xl lg:text-4xl text-white mb-2">THE CONDUCTOR THEORY</h3>
+                            <div class="text-signal font-mono mb-2 lg:mb-4 text-xs lg:text-base">指揮家論</div>
+                            <p class="font-mono text-xs lg:text-sm text-gray-500">
                                 學院不只是培養技術操作員，而是培養能夠駕馭 AI 樂團的「指揮家」。從技術實現到藝術決策的完整掌控。
                             </p>
                         </div>
                         <div>
-                            <h3 class="font-heavy text-4xl text-white mb-2">TALENT ENGINE</h3>
-                            <div class="text-signal font-mono mb-4">生態人才引擎</div>
-                            <p class="font-mono text-sm text-gray-500">
-                                HKAIFF 電影節生態系統的核心驅動力，連接競賽單元、電影市場與發行網絡。
+                            <h3 class="font-heavy text-2xl lg:text-4xl text-white mb-2">TALENT ENGINE</h3>
+                            <div class="text-signal font-mono mb-2 lg:mb-4 text-xs lg:text-base">生態人才引擎</div>
+                            <p class="font-mono text-xs lg:text-sm text-gray-500">
+                                HKAIFF 電影節生態系統的核心驅動力，連接競賽單元、版權市場與全球發行網絡。
                             </p>
                         </div>
                     </div>
@@ -201,37 +272,50 @@
             </div>
         </div>
 
+        <!-- SLIDE 3: SYSTEM SCALE -->
         <div class="slide-container" data-duration="6">
-            <div class="absolute right-0 top-0 w-1/4 h-full bg-concrete/5 border-l border-black"></div>
+            <div class="absolute right-0 top-0 w-1/4 h-full bg-concrete/5 border-l border-black hidden lg:block"></div>
             
-            <div class="max-w-[1920px] mx-auto w-full relative z-10">
-                <div class="flex items-end justify-between mb-16 border-b-2 border-black pb-4">
-                    <h2 class="font-heavy text-7xl">SYSTEM <span class="text-signal">SCALE</span></h2>
-                    <div class="font-mono text-right">
+            <div class="max-w-[1920px] mx-auto w-full relative z-10 h-full flex flex-col justify-center">
+                <div class="flex items-end justify-between mb-8 lg:mb-16 border-b-2 border-black pb-4">
+                    <h2 class="font-heavy text-4xl lg:text-7xl">SYSTEM <span class="text-signal">SCALE</span></h2>
+                    <div class="font-mono text-right text-[10px] lg:text-base">
                         <div>DATA SOURCE: HKAIFA_DB</div>
-                        <div>LAST UPDATE: 2025.11</div>
+                        <div>LAST UPDATE: 2025.12</div>
                     </div>
                 </div>
                 
-                <div class="grid grid-cols-3 gap-8">
-                    <div class="bg-black text-white p-8 border-b-8 border-signal group hover:-translate-y-2 transition-transform">
-                        <div class="font-mono text-xs text-gray-400 mb-2">CURRICULUM</div>
-                        <div class="font-heavy text-9xl group-hover:text-signal transition-colors">144</div>
-                        <div class="font-mono text-xl mt-4 border-t border-gray-700 pt-4">PROFESSIONAL COURSES<br>專業課程體系</div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8">
+                    <div class="bg-black text-white p-6 lg:p-8 border-b-4 lg:border-b-8 border-signal group flex lg:block justify-between items-center">
+                        <div class="lg:mb-2">
+                            <div class="font-mono text-xs text-gray-400 mb-0 lg:mb-2">CURRICULUM</div>
+                            <div class="font-heavy text-5xl lg:text-9xl group-hover:text-signal transition-colors">144</div>
+                        </div>
+                        <div class="font-mono text-sm lg:text-xl lg:mt-4 lg:border-t border-gray-700 lg:pt-4 text-right lg:text-left">
+                            PROFESSIONAL COURSES<br>專業課程體系
+                        </div>
                     </div>
-                    <div class="bg-white border-2 border-black p-8 border-b-8 border-black group hover:-translate-y-2 transition-transform">
-                        <div class="font-mono text-xs text-gray-500 mb-2">DOMAINS</div>
-                        <div class="font-heavy text-9xl group-hover:text-signal transition-colors">07</div>
-                        <div class="font-mono text-xl mt-4 border-t border-black pt-4">MAJOR FIELDS<br>核心領域覆蓋</div>
+                    <div class="bg-white border-2 border-black p-6 lg:p-8 border-b-4 lg:border-b-8 border-black group flex lg:block justify-between items-center">
+                        <div class="lg:mb-2">
+                            <div class="font-mono text-xs text-gray-500 mb-0 lg:mb-2">DOMAINS</div>
+                            <div class="font-heavy text-5xl lg:text-9xl group-hover:text-signal transition-colors">07</div>
+                        </div>
+                        <div class="font-mono text-sm lg:text-xl lg:mt-4 lg:border-t border-black lg:pt-4 text-right lg:text-left">
+                            MAJOR FIELDS<br>核心領域覆蓋
+                        </div>
                     </div>
-                    <div class="bg-white border-2 border-black p-8 border-b-8 border-black group hover:-translate-y-2 transition-transform">
-                        <div class="font-mono text-xs text-gray-500 mb-2">CAREERS</div>
-                        <div class="font-heavy text-9xl group-hover:text-signal transition-colors">68</div>
-                        <div class="font-mono text-xl mt-4 border-t border-black pt-4">JOB DIRECTIONS<br>職業方向支撐</div>
+                    <div class="bg-white border-2 border-black p-6 lg:p-8 border-b-4 lg:border-b-8 border-black group flex lg:block justify-between items-center">
+                        <div class="lg:mb-2">
+                            <div class="font-mono text-xs text-gray-500 mb-0 lg:mb-2">CAREERS</div>
+                            <div class="font-heavy text-5xl lg:text-9xl group-hover:text-signal transition-colors">68</div>
+                        </div>
+                        <div class="font-mono text-sm lg:text-xl lg:mt-4 lg:border-t border-black lg:pt-4 text-right lg:text-left">
+                            JOB DIRECTIONS<br>職業方向支撐
+                        </div>
                     </div>
                 </div>
                 
-                <div class="mt-8 grid grid-cols-3 gap-8 text-center font-mono text-xs font-bold uppercase">
+                <div class="mt-4 lg:mt-8 grid grid-cols-3 gap-2 lg:gap-8 text-center font-mono text-[10px] lg:text-xs font-bold uppercase">
                     <div class="bg-gray-200 py-2">Foundation (基礎)</div>
                     <div class="bg-gray-300 py-2">Professional (專業)</div>
                     <div class="bg-signal text-white py-2">Project Training (實訓)</div>
@@ -239,79 +323,86 @@
             </div>
         </div>
 
+        <!-- SLIDE 4: FUTURE JOBS -->
         <div class="slide-container bg-signal text-black" data-duration="6">
-            <div class="max-w-[1920px] mx-auto w-full">
-                <div class="flex items-baseline justify-between border-b-4 border-black pb-4 mb-12">
-                    <h2 class="font-heavy text-8xl">FUTURE <span class="text-white text-stroke" style="-webkit-text-stroke: 2px black;">JOBS</span></h2>
-                    <span class="font-mono font-bold text-xl bg-black text-white px-4 py-1">#DEFINING THE NEXT ERA</span>
+            <div class="max-w-[1920px] mx-auto w-full h-full flex flex-col justify-center">
+                <div class="flex flex-col lg:flex-row items-start lg:items-baseline justify-between border-b-4 border-black pb-4 mb-6 lg:mb-12">
+                    <h2 class="font-heavy text-5xl lg:text-8xl mb-2 lg:mb-0">FUTURE <span class="text-white text-stroke-white">JOBS</span></h2>
+                    <span class="font-mono font-bold text-xs lg:text-xl bg-black text-white px-2 lg:px-4 py-1">#DEFINING THE NEXT ERA</span>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-0 border-2 border-black bg-white">
-                    <div class="p-8 border-b md:border-b-0 md:border-r border-black hover:bg-black hover:text-white transition-colors group">
-                        <div class="font-mono text-xs mb-2 text-gray-500 group-hover:text-signal">ROLE_01 // DIRECTOR</div>
-                        <div class="font-heavy text-5xl uppercase leading-none mb-2">Real-time AI<br>Director</div>
-                        <div class="font-bold font-mono">實時 AI 生成導演</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-0 border-2 border-black bg-white overflow-y-auto lg:overflow-visible max-h-[60vh] lg:max-h-none">
+                    <div class="p-6 lg:p-8 border-b md:border-b-0 md:border-r border-black hover:bg-black hover:text-white transition-colors group">
+                        <div class="font-mono text-[10px] lg:text-xs mb-2 text-gray-500 group-hover:text-signal">ROLE_01 // DIRECTOR</div>
+                        <div class="font-heavy text-3xl lg:text-5xl uppercase leading-none mb-2">Real-time AI<br>Director</div>
+                        <div class="font-bold font-mono text-sm lg:text-base">實時 AI 生成導演</div>
                     </div>
-                    <div class="p-8 border-b md:border-b-0 border-black hover:bg-black hover:text-white transition-colors group">
-                        <div class="font-mono text-xs mb-2 text-gray-500 group-hover:text-signal">ROLE_02 // FINANCE</div>
-                        <div class="font-heavy text-5xl uppercase leading-none mb-2">AI Film RWA<br>Structurer</div>
-                        <div class="font-bold font-mono">AI 影視 RWA 架構師</div>
+                    <!-- 修正：RWA Structurer -> IP Asset Architect (合規化) -->
+                    <div class="p-6 lg:p-8 border-b md:border-b-0 border-black hover:bg-black hover:text-white transition-colors group">
+                        <div class="font-mono text-[10px] lg:text-xs mb-2 text-gray-500 group-hover:text-signal">ROLE_02 // IP ASSET</div>
+                        <div class="font-heavy text-3xl lg:text-5xl uppercase leading-none mb-2">AI Film IP<br>Architect</div>
+                        <div class="font-bold font-mono text-sm lg:text-base">AI 影視 IP 資產架構師</div>
                     </div>
-                    <div class="p-8 border-b md:border-b-0 md:border-r border-black hover:bg-black hover:text-white transition-colors group">
-                        <div class="font-mono text-xs mb-2 text-gray-500 group-hover:text-signal">ROLE_03 // AGENT</div>
-                        <div class="font-heavy text-5xl uppercase leading-none mb-2">Digital Human<br>Broker</div>
-                        <div class="font-bold font-mono">明星數字人經紀</div>
+                    <div class="p-6 lg:p-8 border-b md:border-b-0 md:border-r border-black hover:bg-black hover:text-white transition-colors group">
+                        <div class="font-mono text-[10px] lg:text-xs mb-2 text-gray-500 group-hover:text-signal">ROLE_03 // AGENT</div>
+                        <div class="font-heavy text-3xl lg:text-5xl uppercase leading-none mb-2">Digital Human<br>Broker</div>
+                        <div class="font-bold font-mono text-sm lg:text-base">明星數字人經紀</div>
                     </div>
-                    <div class="p-8 hover:bg-black hover:text-white transition-colors group">
-                        <div class="font-mono text-xs mb-2 text-gray-500 group-hover:text-signal">ROLE_04 // SPATIAL</div>
-                        <div class="font-heavy text-5xl uppercase leading-none mb-2">Vision Pro<br>Spatial Director</div>
-                        <div class="font-bold font-mono">空間計算導演</div>
+                    <div class="p-6 lg:p-8 hover:bg-black hover:text-white transition-colors group">
+                        <div class="font-mono text-[10px] lg:text-xs mb-2 text-gray-500 group-hover:text-signal">ROLE_04 // SPATIAL</div>
+                        <div class="font-heavy text-3xl lg:text-5xl uppercase leading-none mb-2">Vision Pro<br>Spatial Director</div>
+                        <div class="font-bold font-mono text-sm lg:text-base">空間計算導演</div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- SLIDE 5: DUAL VALUE SYSTEM (COMPLIANCE OPTIMIZED) -->
         <div class="slide-container bg-concrete text-white" data-duration="8">
             <div class="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
-                <i class="fa-solid fa-network-wired text-[40rem]"></i>
+                <i class="fa-solid fa-network-wired text-[20rem] lg:text-[40rem]"></i>
             </div>
             
-            <div class="max-w-6xl mx-auto w-full relative z-10">
-                <div class="text-center mb-16">
-                    <h2 class="font-heavy text-7xl mb-4">DUAL TOKEN ECONOMY</h2>
-                    <p class="font-mono text-signal">INNOVATIVE ECONOMIC MODEL</p>
+            <div class="max-w-6xl mx-auto w-full relative z-10 h-full flex flex-col justify-center">
+                <div class="text-center mb-8 lg:mb-16">
+                    <!-- 修正：Dual Token Economy -> Dual Value System -->
+                    <h2 class="font-heavy text-4xl lg:text-7xl mb-2 lg:mb-4">DUAL VALUE SYSTEM</h2>
+                    <p class="font-mono text-signal text-xs lg:text-base">INNOVATIVE ECONOMIC MODEL // 雙重價值體系</p>
                 </div>
 
-                <div class="grid grid-cols-2 gap-16 items-stretch">
-                    <div class="border-4 border-white p-8 relative bg-void/50 backdrop-blur-md">
-                        <div class="absolute -top-6 left-8 bg-white text-black px-4 py-1 font-heavy text-xl">AIF TOKEN</div>
-                        <h3 class="font-mono text-xl mb-6 text-gray-300 border-b border-gray-600 pb-2">ECOSYSTEM UTILITY (生態)</h3>
-                        <ul class="font-mono text-sm space-y-4 list-none">
-                            <li class="flex items-start"><span class="text-signal mr-2">>>></span> <span><strong>支付學費與治理：</strong>用於生態內所有消費及投票權</span></li>
-                            <li class="flex items-start"><span class="text-signal mr-2">>>></span> <span><strong>高級資源訪問：</strong>解鎖私有算力與數據集</span></li>
-                            <li class="flex items-start"><span class="text-signal mr-2">>>></span> <span><strong>獎學金池：</strong>優秀學員激勵機制</span></li>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-stretch">
+                    <!-- AIF UNIT: 算力單元 (去幣化) -->
+                    <div class="border-4 border-white p-6 lg:p-8 relative bg-void/50 backdrop-blur-md">
+                        <div class="absolute -top-4 lg:-top-6 left-4 lg:left-8 bg-white text-black px-4 py-1 font-heavy text-lg lg:text-xl">AIF UNIT</div>
+                        <h3 class="font-mono text-base lg:text-xl mb-4 lg:mb-6 text-gray-300 border-b border-gray-600 pb-2">COMPUTING POWER (算力能源)</h3>
+                        <ul class="font-mono text-xs lg:text-sm space-y-3 lg:space-y-4 list-none">
+                            <li class="flex items-start"><span class="text-signal mr-2">>>></span> <span><strong>算力結算與權益：</strong>生態內生成服務的結算單位</span></li>
+                            <li class="flex items-start"><span class="text-signal mr-2">>>></span> <span><strong>高級生成資源：</strong>解鎖私有算力與專屬模型</span></li>
+                            <li class="flex items-start"><span class="text-signal mr-2">>>></span> <span><strong>社區權益證明：</strong>生態治理與獎學金激勵</span></li>
                         </ul>
                     </div>
 
-                    <div class="border-4 border-signal p-8 relative bg-gray-900/80 backdrop-blur-md">
-                        <div class="absolute -top-6 left-8 bg-signal text-black px-4 py-1 font-heavy text-xl">ACA TOKEN</div>
-                        <h3 class="font-mono text-xl mb-6 text-gray-300 border-b border-gray-600 pb-2">CONTENT ASSETS (資產)</h3>
-                        <ul class="font-mono text-sm space-y-4 list-none">
-                            <li class="flex items-start"><span class="text-signal mr-2">>>></span> <span><strong>課程資產化：</strong>代表特定課程的知識產權</span></li>
-                            <li class="flex items-start"><span class="text-signal mr-2">>>></span> <span><strong>融資與分紅：</strong>支持課程開發融資，共享銷售收益</span></li>
-                            <li class="flex items-start"><span class="text-signal mr-2">>>></span> <span><strong>價值流通：</strong>知識產權的二級市場交易</span></li>
+                    <!-- ACA ASSET: 數字資產 (強調版權/IP) -->
+                    <div class="border-4 border-signal p-6 lg:p-8 relative bg-gray-900/80 backdrop-blur-md mt-8 lg:mt-0">
+                        <div class="absolute -top-4 lg:-top-6 left-4 lg:left-8 bg-signal text-black px-4 py-1 font-heavy text-lg lg:text-xl">ACA ASSET</div>
+                        <h3 class="font-mono text-base lg:text-xl mb-4 lg:mb-6 text-gray-300 border-b border-gray-600 pb-2">IP RIGHTS (版權資產)</h3>
+                        <ul class="font-mono text-xs lg:text-sm space-y-3 lg:space-y-4 list-none">
+                            <li class="flex items-start"><span class="text-signal mr-2">>>></span> <span><strong>IP 權益錨定：</strong>代表特定影視項目的數字版權</span></li>
+                            <li class="flex items-start"><span class="text-signal mr-2">>>></span> <span><strong>版稅預售與收益：</strong>支持內容創作，共享發行收益</span></li>
+                            <li class="flex items-start"><span class="text-signal mr-2">>>></span> <span><strong>資產價值流通：</strong>數字化 IP 的市場價值交換</span></li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- SLIDE 6: TECH STACK -->
         <div class="slide-container bg-[#EAEAEA]" data-duration="6">
-            <div class="max-w-[1920px] mx-auto w-full grid grid-cols-12 gap-0 border-2 border-black h-[70vh]">
-                <div class="col-span-6 border-r-2 border-black p-12 flex flex-col justify-between hover:bg-white transition-colors">
+            <div class="max-w-[1920px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-0 border-2 border-black h-auto lg:h-[70vh]">
+                <div class="col-span-1 lg:col-span-6 border-b-2 lg:border-b-0 lg:border-r-2 border-black p-8 lg:p-12 flex flex-col justify-between hover:bg-white transition-colors h-64 lg:h-auto">
                     <div>
-                        <h2 class="font-heavy text-6xl mb-8">DIGITAL TEACHER<br><span class="text-signal">SYSTEM</span></h2>
-                        <p class="font-mono text-sm max-w-md mb-8">
+                        <h2 class="font-heavy text-4xl lg:text-6xl mb-4 lg:mb-8">DIGITAL TEACHER<br><span class="text-signal">SYSTEM</span></h2>
+                        <p class="font-mono text-xs lg:text-sm max-w-md mb-4 lg:mb-8">
                             AI 驅動的個性化教學系統。自適應調整內容，支持動態翻譯與跨文化適應，確保每個學生擁有專屬學習路徑。
                         </p>
                     </div>
@@ -321,11 +412,11 @@
                     </div>
                 </div>
 
-                <div class="col-span-6 p-12 flex flex-col justify-between hover:bg-black hover:text-white transition-colors group">
+                <div class="col-span-1 lg:col-span-6 p-8 lg:p-12 flex flex-col justify-between hover:bg-black hover:text-white transition-colors group h-64 lg:h-auto">
                     <div>
-                        <h2 class="font-heavy text-6xl mb-8">BLOCKCHAIN<br><span class="text-gray-400 group-hover:text-signal">CERTIFICATION</span></h2>
-                        <p class="font-mono text-sm max-w-md mb-8">
-                            四級防篡改認證體系：<br>
+                        <h2 class="font-heavy text-4xl lg:text-6xl mb-4 lg:mb-8">BLOCKCHAIN<br><span class="text-gray-400 group-hover:text-signal">CERTIFICATION</span></h2>
+                        <p class="font-mono text-xs lg:text-sm max-w-md mb-4 lg:mb-8">
+                            基於鏈上數據的四級防篡改認證體系：<br>
                             1. 技能模塊 (Skill)<br>
                             2. 專業方向 (Professional)<br>
                             3. 項目能力 (Project)<br>
@@ -333,51 +424,53 @@
                         </p>
                     </div>
                     <div class="font-mono text-xs font-bold">
-                        [ GLOBAL RECOGNITION ]<br>
+                        [ INDUSTRIAL TRUST ]<br>
                         VERIFIABLE ON-CHAIN DATA
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- SLIDE 7: GLOBAL EXPANSION -->
         <div class="slide-container" data-duration="6">
-            <div class="max-w-[1920px] mx-auto w-full text-center">
-                <h2 class="mega-text text-[10rem] lg:text-[15rem] text-gray-300 opacity-50 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full z-0 pointer-events-none">WORLDWIDE</h2>
+            <div class="max-w-[1920px] mx-auto w-full text-center relative h-full flex flex-col justify-center">
+                <h2 class="mega-text text-[4rem] sm:text-8xl lg:text-[15rem] text-gray-300 opacity-50 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full z-0 pointer-events-none">WORLDWIDE</h2>
                 
                 <div class="relative z-10">
-                    <h2 class="font-heavy text-6xl mb-12 bg-black text-white inline-block px-8 py-2">EXPANSION PLAN 2030</h2>
-                    <p class="font-mono text-sm mb-12 max-w-2xl mx-auto"> 構建全球最大的 AI 影視教育協作網絡</p>
+                    <h2 class="font-heavy text-3xl lg:text-6xl mb-6 lg:mb-12 bg-black text-white inline-block px-4 lg:px-8 py-2">EXPANSION PLAN 2030</h2>
+                    <p class="font-mono text-xs lg:text-sm mb-8 lg:mb-12 max-w-2xl mx-auto"> 構建全球最大的 AI 影視教育協作網絡</p>
                     
-                    <div class="flex justify-center gap-12">
-                        <div class="w-72 h-72 border-4 border-black bg-white flex flex-col justify-center items-center hover:shadow-[10px_10px_0px_0px_rgba(255,51,0,1)] transition-shadow">
-                            <div class="font-heavy text-8xl text-signal">100</div>
-                            <div class="font-mono font-bold mt-2">GLOBAL CENTERS<br>全球合作中心</div>
+                    <div class="flex flex-col lg:flex-row justify-center gap-6 lg:gap-12 items-center">
+                        <div class="w-56 h-56 lg:w-72 lg:h-72 border-4 border-black bg-white flex flex-col justify-center items-center hover:shadow-[10px_10px_0px_0px_rgba(255,51,0,1)] transition-shadow">
+                            <div class="font-heavy text-6xl lg:text-8xl text-signal">100</div>
+                            <div class="font-mono font-bold mt-2 text-xs lg:text-base">GLOBAL CENTERS<br>全球合作中心</div>
                         </div>
-                        <div class="w-72 h-72 border-4 border-black bg-black text-white flex flex-col justify-center items-center hover:shadow-[10px_10px_0px_0px_rgba(255,51,0,1)] transition-shadow">
-                            <div class="font-heavy text-8xl">50K</div>
-                            <div class="font-mono font-bold mt-2">ANNUAL TALENTS<br>年培養人才</div>
+                        <div class="w-56 h-56 lg:w-72 lg:h-72 border-4 border-black bg-black text-white flex flex-col justify-center items-center hover:shadow-[10px_10px_0px_0px_rgba(255,51,0,1)] transition-shadow">
+                            <div class="font-heavy text-6xl lg:text-8xl">50K</div>
+                            <div class="font-mono font-bold mt-2 text-xs lg:text-base">ANNUAL TALENTS<br>年培養人才</div>
                         </div>
                     </div>
 
-                    <div class="mt-16 font-mono text-lg font-bold">
-                        HKG <span class="mx-4 text-signal">//</span> LAX <span class="mx-4 text-signal">//</span> SIN <span class="mx-4 text-signal">//</span> DXB <span class="mx-4 text-signal">//</span> LON
+                    <div class="mt-8 lg:mt-16 font-mono text-sm lg:text-lg font-bold overflow-x-auto whitespace-nowrap px-4">
+                        HKG <span class="mx-2 lg:mx-4 text-signal">//</span> LAX <span class="mx-2 lg:mx-4 text-signal">//</span> SIN <span class="mx-2 lg:mx-4 text-signal">//</span> DXB <span class="mx-2 lg:mx-4 text-signal">//</span> LON
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- SLIDE 8: CONTACT -->
         <div class="slide-container bg-black text-white" data-duration="5">
-            <div class="max-w-5xl mx-auto w-full text-center">
-                <h1 class="font-heavy text-7xl mb-8 uppercase">Initialize Your Future</h1>
-                <p class="font-mono text-xl mb-12 text-gray-400">
+            <div class="max-w-5xl mx-auto w-full text-center h-full flex flex-col justify-center px-4">
+                <h1 class="font-heavy text-4xl lg:text-7xl mb-4 lg:mb-8 uppercase">Initialize Your Future</h1>
+                <p class="font-mono text-sm lg:text-xl mb-8 lg:mb-12 text-gray-400">
                     預備課程 | 職業認證 | 項目實訓
                 </p>
-                <div class="inline-block border-2 border-signal p-2 transform hover:scale-105 transition-transform duration-300">
-                    <div class="bg-signal text-black px-12 py-6 font-heavy text-4xl lg:text-6xl tracking-tighter">
+                <div class="inline-block border-2 border-signal p-1 lg:p-2 transform hover:scale-105 transition-transform duration-300">
+                    <div class="bg-signal text-black px-6 py-3 lg:px-12 lg:py-6 font-heavy text-2xl lg:text-6xl tracking-tighter break-all">
                         WWW.HKAIFA.ACADEMY
                     </div>
                 </div>
-                <div class="mt-12 font-mono text-xs text-gray-500">
+                <div class="mt-8 lg:mt-12 font-mono text-[10px] lg:text-xs text-gray-500">
                     [ AUTO-LOOP SEQUENCE INITIATED ]<br>
                     COPYRIGHT © 2025 HKAIFA. ALL RIGHTS RESERVED.
                 </div>
@@ -387,27 +480,28 @@
     </main>
 
     <div class="marquee-container">
-        <div class="marquee-content font-heavy text-2xl uppercase tracking-wider">
-            <span class="mx-8 text-signal">///</span> GLOBAL FIRST AI FILM ACADEMY
-            <span class="mx-8 text-signal">///</span> DUAL TOKEN ECONOMY
-            <span class="mx-8 text-signal">///</span> BLOCKCHAIN CERTIFICATION
-            <span class="mx-8 text-signal">///</span> AI-NATIVE CURRICULUM
-            <span class="mx-8 text-signal">///</span> DIGITAL TEACHER SYSTEM
-            <span class="mx-8 text-signal">///</span> GLOBAL FIRST AI FILM ACADEMY
-            <span class="mx-8 text-signal">///</span> DUAL TOKEN ECONOMY
-            <span class="mx-8 text-signal">///</span> BLOCKCHAIN CERTIFICATION
-            <span class="mx-8 text-signal">///</span> AI-NATIVE CURRICULUM
+        <div class="marquee-content font-heavy text-base lg:text-2xl uppercase tracking-wider">
+            <!-- 修正：Dual Token Economy -> Dual Value System -->
+            <span class="mx-4 lg:mx-8 text-signal">///</span> GLOBAL FIRST AI FILM ACADEMY
+            <span class="mx-4 lg:mx-8 text-signal">///</span> DUAL VALUE SYSTEM
+            <span class="mx-4 lg:mx-8 text-signal">///</span> BLOCKCHAIN CERTIFICATION
+            <span class="mx-4 lg:mx-8 text-signal">///</span> AI-NATIVE CURRICULUM
+            <span class="mx-4 lg:mx-8 text-signal">///</span> DIGITAL TEACHER SYSTEM
+            <span class="mx-4 lg:mx-8 text-signal">///</span> GLOBAL FIRST AI FILM ACADEMY
+            <span class="mx-4 lg:mx-8 text-signal">///</span> DUAL VALUE SYSTEM
+            <span class="mx-4 lg:mx-8 text-signal">///</span> BLOCKCHAIN CERTIFICATION
+            <span class="mx-4 lg:mx-8 text-signal">///</span> AI-NATIVE CURRICULUM
         </div>
-        <div class="marquee-content font-heavy text-2xl uppercase tracking-wider">
-            <span class="mx-8 text-signal">///</span> GLOBAL FIRST AI FILM ACADEMY
-            <span class="mx-8 text-signal">///</span> DUAL TOKEN ECONOMY
-            <span class="mx-8 text-signal">///</span> BLOCKCHAIN CERTIFICATION
-            <span class="mx-8 text-signal">///</span> AI-NATIVE CURRICULUM
-            <span class="mx-8 text-signal">///</span> DIGITAL TEACHER SYSTEM
-            <span class="mx-8 text-signal">///</span> GLOBAL FIRST AI FILM ACADEMY
-            <span class="mx-8 text-signal">///</span> DUAL TOKEN ECONOMY
-            <span class="mx-8 text-signal">///</span> BLOCKCHAIN CERTIFICATION
-            <span class="mx-8 text-signal">///</span> AI-NATIVE CURRICULUM
+        <div class="marquee-content font-heavy text-base lg:text-2xl uppercase tracking-wider">
+            <span class="mx-4 lg:mx-8 text-signal">///</span> GLOBAL FIRST AI FILM ACADEMY
+            <span class="mx-4 lg:mx-8 text-signal">///</span> DUAL VALUE SYSTEM
+            <span class="mx-4 lg:mx-8 text-signal">///</span> BLOCKCHAIN CERTIFICATION
+            <span class="mx-4 lg:mx-8 text-signal">///</span> AI-NATIVE CURRICULUM
+            <span class="mx-4 lg:mx-8 text-signal">///</span> DIGITAL TEACHER SYSTEM
+            <span class="mx-4 lg:mx-8 text-signal">///</span> GLOBAL FIRST AI FILM ACADEMY
+            <span class="mx-4 lg:mx-8 text-signal">///</span> DUAL VALUE SYSTEM
+            <span class="mx-4 lg:mx-8 text-signal">///</span> BLOCKCHAIN CERTIFICATION
+            <span class="mx-4 lg:mx-8 text-signal">///</span> AI-NATIVE CURRICULUM
         </div>
     </div>
 
@@ -462,7 +556,7 @@
                 { autoAlpha: 1, y: 0, opacity: 1, duration: 1, ease: "power3.out" }
             );
 
-            // 內部元素動畫 (Staggered Text)
+            // 內部元素動畫 (Staggered Text) - 手機上減少延遲以提高響應感
             const elements = currentSlide.querySelectorAll('h1, h2, h3, p, .decor-line, .grid > div, img, ul, .mega-text');
             gsap.fromTo(elements, 
                 { y: 30, opacity: 0 },
@@ -487,6 +581,19 @@
                 });
             }, duration * 1000);
         }
+
+        // 交互：點擊切換 (優化用戶體驗)
+        // 手機端點擊屏幕任意位置可以立即跳轉下一頁
+        document.addEventListener('click', () => {
+            clearTimeout(slideInterval);
+            const currentSlide = slides[currentIndex];
+            gsap.to(currentSlide, {
+                 y: -50, opacity: 0, duration: 0.4, ease: "power2.in", // 加快手動切換速度
+                 onComplete: () => {
+                     playSlide(currentIndex + 1);
+                 }
+            });
+        });
 
         // 頁面加載完成後啟動
         window.onload = initSystem;
